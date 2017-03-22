@@ -108,7 +108,24 @@ class Asign_model extends CI_Model {
             }
         }
 
-         public function updateDataStatus($data){
+        public function updateDataAmbiente($data){
+            $this->db->trans_start();
+                if($data['ambiente_id']){
+                    $dataDB = 
+                    array(
+                        'ambiente_id'   => $data['ambiente_id'],
+                    );
+                    $this->db->where('ticket_id', $data['ticket_id']);
+                    $this->db->update('tickets',$dataDB);
+                }
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === TRUE)
+                return 1;
+            else
+                return 0;
+        }
+
+        public function updateDataStatus($data){
             $this->db->trans_start();
             if($data['estado_id']){
                 $dataDB = 

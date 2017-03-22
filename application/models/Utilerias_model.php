@@ -47,6 +47,16 @@ class Utilerias_model extends CI_Model {
 		    }
 		    return ($data);
         }
+        public function getAmbiente(){
+            $query = $this->db->get('ambiente_ticket');
+			$data=array();
+			$data[""] = 'Selecciona el ambiente de desarrollo'; 
+			foreach ($query->result() as $row)
+		    {
+		        $data[$row->ambiente_id] = $row->ambiente;
+		    }
+		    return ($data);
+        }
         public function getTecnicos(){
         	$this->db->where('perfil_id', '3');
             $query = $this->db->get('usuarios');
