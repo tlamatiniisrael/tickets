@@ -37,6 +37,7 @@ class Welcome extends CI_Controller {
 		$data['estados'] 		= $this->utilerias_model->getEstados();
 		$data['tecnicos'] 		= $this->utilerias_model->getTecnicos();
 		$data['solventacion'] 	= $this->utilerias_model->getSolventacion();
+		$data['ambiente'] 		= $this->utilerias_model->getAmbiente();
 		
 		$this->load->view('template/head');
 		$this->load->view('template/header',$data);

@@ -257,6 +257,26 @@ class Asign extends CI_Controller {
 		}
 	}
 
+	public function updateAmbiente()
+	{
+		$ticket			= $this->input->post('ticket');
+		$ambiente		= $this->input->post('ambiente');
+
+		$data = 
+		array(
+			'ambiente_id' 	=> $ambiente,
+			'ticket_id' 	=> $ticket
+		);
+
+		$ok = $this->asign_model->updateDataAmbiente($data);
+
+		if( $ok == 1){
+			echo '{"status":"success", "msg":"La contestación al ticket '.$ticket.' se ha agregado correctamente"}';
+		}else{
+			echo '{"status":"fail", "msg":"Al parecer hay un problema en la BD espere un momento y vuelvalo a intentar"}';	
+		}
+	}
+
 	public function deleteData()
 	{
 		
