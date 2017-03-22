@@ -284,11 +284,15 @@ $(document).ready(function(){
 			    $(element).parent('.form-group').find('.error').remove();
 		  	},
 		  	submitHandler: function(form) {
-		  		var formData = new FormData($('#adjunto-form')[0]);
+		  		var formData = new FormData();
 		  		var formulario = $('form').serializeArray();
 			    $.each(formulario,function(key,input){
 			        formData.append(input.name,input.value);
 			    });
+			    formData.append('userfile', $('input[type=file]')[0].files[0]);
+			    for (var pair of formData.entries()) {
+    				console.log(pair[0]+ ', ' + pair[1]); 
+				}
 		  		$.ajax({
 			        type 		: "POST",
 			        url: base_url+"index.php/tickets/insertData",
@@ -297,25 +301,25 @@ $(document).ready(function(){
 			        contentType : false,
 			        processData : false,
 			        success: function (success) {
-			        console.log(success);
-			          json = jQuery.parseJSON(success);
-			          // console.log(json);
-			          switch(json.status){
-			            case 'success':
-			            	$(".alert-msg").text(json.msg);
-			            	$(".positive.message").show().delay(5000).fadeOut();
-			            	$("input").not(".non-active").val('');
-			            	$("textarea").val('');
-			            	$("select").val('');
-			            	$("select option[value='']").attr("selected",true);
-			            	break;
-			            case 'fail':
-			            	$(".alert-msg").text(json.msg);
-			            	$(".error.message").show().delay(5000).fadeOut();
-			            	break;
-			            default:
-			              break;
-			          }
+			        	console.log(success);
+			          	json = jQuery.parseJSON(success);
+			          	// console.log(json);
+			          	switch(json.status){
+				            case 'success':
+				            	$(".alert-msg").text(json.msg);
+				            	$(".positive.message").show().delay(5000).fadeOut();
+				            	$("input").not(".non-active").val('');
+				            	$("textarea").val('');
+				            	$("select").val('');
+				            	$("select option[value='']").attr("selected",true);
+				            	break;
+				            case 'fail':
+				            	$(".alert-msg").text(json.msg);
+				            	$(".error.message").show().delay(5000).fadeOut();
+				            	break;
+				            default:
+				              	break;
+			          	}
 			        }
 			    });  
 		  	}
@@ -1094,6 +1098,55 @@ $(document).ready(function(){
 			        	console.log(success);
 			          	json = jQuery.parseJSON(success);
 			          	console.log(json);
+			         	switch(json.status){
+			            	case 'success':
+			            		$(".alert-msg").text(json.msg);
+				            	$(".positive.message").show().delay(5000).fadeOut();
+				            	$("input").not(".non-active").val('');
+				            	$("textarea").val('');
+				            	$("select").val('');
+				            	$("select option[value='']").attr("selected",true);
+			            		break;
+			            	case 'fail':
+			            		$(".alert-msg").text(json.msg);
+			            		$(".error.message").show().delay(5000).fadeOut();
+			            		break;
+			            	default:
+			              		break;
+			          	}
+			        }
+			    });  
+		  	}
+		});
+
+		$("#ambiente-form").validate({
+		 	rules: {
+		 		ambiente: {
+			      	required: true,
+			    }
+		  	},
+		  	messages: {
+		  		ambiente: {
+			      	required: "Debes seleccionar un ambiente de desarrollo",
+			    }
+		  	},
+			highlight: function(element) {
+			    // $(element).parent('.form-group').addClass('validate-error');
+			},
+		  	success: function (element) {
+			    // $(element).parent('.form-group').removeClass('validate-error');
+			    $(element).parent('.form-group').find('.error').remove();
+		  	},
+		  	submitHandler: function(form) {
+		  		console.log($(form).serialize());
+		  		$.ajax({
+			        type: "POST",
+			        url: base_url+"index.php/asign/updateAmbiente",
+			        data: $(form).serialize(),
+			        success: function (success) {
+			        	// console.log(success);
+			          	json = jQuery.parseJSON(success);
+			          	// console.log(json);
 			         	switch(json.status){
 			            	case 'success':
 			            		$(".alert-msg").text(json.msg);
