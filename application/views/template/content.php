@@ -68,7 +68,7 @@ switch ($tab) {
 		                <th class="visible-xs visible-sm visible-md visible-lg"><?=$ticket->ticket_id?></th>
 		                <th class="visible-sm visible-md visible-lg"><?=$ticket->fecha_registro?></th>
 		                <th class="visible-sm visible-md visible-lg capitalize-case"><?=$ticket->usuario?></th>
-		                <th class="visible-sm visible-md visible-lg capitalize-case"><?=$ticket->asignado?></th>
+		                <th class="visible-sm visible-md visible-lg capitalize-case"><?=$ticket->estado?></th>
 		                <th class="visible-sm visible-md visible-lg"><?=$ticket->sumario?></th>
 
 		            </tr>
@@ -80,6 +80,9 @@ switch ($tab) {
     	</table>
 	</main>
 	<main class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-2 col-lg-8 text-center vertical-align-ms show-none detail-ticket mb-xs-40 mb-xxs-40" id="ticket-preview">
+		<?php
+		if($sessionRol != "2"){
+		?>
 		<div class="ui accordion mt-xxs-10 mb-xxs-10  mt-xs-10 mb-xs-10 mt-sm-10 mb-sm-10 mt-md-10 mb-md-10 mt-lg-10 mb-lg-10">
 		  	<div class="active title text-left">
 		    	<i class="dropdown icon"></i>
@@ -101,6 +104,9 @@ switch ($tab) {
 		  		</div>
 		  	</div>
 		</div>
+		<?php
+		}
+		?>
 		<div class="panel panel-card">
 		  	<div class="panel-heading secondary-gem txt-blanco bold">Datos del Ticket</div>
 		  	<div class="panel-body padding-only-lr">
@@ -204,6 +210,7 @@ switch ($tab) {
 		  			<div class="item pointer" data-tab="tab-archivo"><i class="icon attach"></i><span class="hidden-xs">Archivo</span></div>
 		  			<div class="item pointer" data-tab="tab-sql"><i class="icon database"></i><span class="hidden-xs">SQL</span></div>
 		  			<div class="item pointer" data-tab="tab-revision"><i class="icon edit"></i><span class="hidden-xs">Revisión</span></div>
+		  			<div class="item pointer" data-tab="tab-ambiente"><i class="icon code"></i><span class="hidden-xs">Ambiente</span></div>
 					<?php
 					break;
 				case '2':
@@ -335,6 +342,22 @@ switch ($tab) {
 				</div>
 		  	</div>
 		</div>
+		<div class="ui bottom attached tab segment" data-tab="tab-ambiente">
+		  	<div class="row">
+		  		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+					<?= form_open('', array('id' => 'ambiente-form', 'data-toggle' => "validator", 'autocomplete' => 'off')); ?>
+						<?= form_input(array('id' => 'ticket', 'type'  => 'hidden','name'  => 'ticket','class' => 'ticket non-active'));?>
+						<div class="form-group text-left">
+					        <?= form_label("Ambiente","ambiente", array('class' => 'text-negro'));?>
+					        <?= form_dropdown('ambiente', $ambiente, "", array('id' => 'ambiente', 'class' => 'form-control')); ?>
+					    </div>
+					    <button type="submit" class="mt-15 btn btn-success">
+		                	<i class="glyphicon glyphicon-check"></i> Enviar petición
+		            	</button>
+					<?= form_close();?>
+				</div>
+		  	</div>
+		</div>
 	</main>
 	<main id="table-notes" class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-2 col-lg-8 text-center mt-xxs-20 mb-xxs-40 mt-xs-20 mb-xs-40 mt-sm-20 mb-sm-40 mt-sm-20 mb-sm-40 show-none detail-ticket">
 		
@@ -349,6 +372,15 @@ switch ($tab) {
 ?>
 	<main class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-2 col-lg-8 text-center vertical-align">
 		<?= form_open_multipart('tickets/insertData', array('class' => 'ticket-form mt-xxs-10 mb-xxs-10', 'id' => 'formulario', 'data-toggle' => "validator", 'autocomplete' => 'off')); ?>
+			<div class="form-group text-left">
+                <?= form_label("Número de control de cambios","codigo", array('class' => 'text-negro'));?>
+                <?= form_input(array('id' => 'codigo', 'type'  => 'text','class'  => 'form-control required','name'  => 'codigo', 'placeholder'  => 'Número de control de cambios'));?>
+            </div>
+            <div class="form-group text-center">
+	            <label class="checkbox-inline"><input type="checkbox" name="archivo" value="1">Archivo</label>
+				<label class="checkbox-inline"><input type="checkbox" name="base-datos" value="2">Base de Datos</label>
+				<label class="checkbox-inline"><input type="checkbox" name="aplicativo" value="4">Aplicativo</label>
+			</div>
 			<div class="form-group text-left">
                 <?= form_label("Categoría","categoria", array('class' => 'text-negro'));?>
                 <?= form_dropdown('categoria', $categorias, "", array('id' => 'categoria', 'class' => 'form-control')); ?>
@@ -450,21 +482,25 @@ switch ($tab) {
 	case 'about':
 			?>
 			<!--Aqui-->
-			<div id="margen1">
-  				<h1>Acerca de </h1>
- 				<div>
- 				<p>
-					Plataforma independiente basada en web para generar tickets de petición y respuesta a problemas derivados y competentes a la Dirección de Desarrollo de Sistemas e Informática de la Dirección General de Recaudación
-				</p>
- 				</div>
+			<img class="img-about" src="<?= base_url('assets/images/logo.png'); ?>">
+			<div class="about-xxs-container about-xs-container about-sm-container about-md-container about-lg-container">
+				<table class="about-xxs about-xs about-sm about-md about-lg">
+					<tr>
+						<td>
+							<p>
+								Plataforma independiente basada en web para generar tickets de petición y respuesta a problemas derivados y competentes a la Dirección de Desarrollo de Sistemas e Informática de la Dirección General de Recaudación.	
+							</p>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<footer>
-				<p>compatible con: </p>
+				<p>Compatible con:</p>
 				<div>
-					<i class="icon internet explorer"></i>
-					<i class="icon firefox"></i>
-					<i class="icon safari"></i>
-					<i class="icon chrome"></i>
+					<i title="Internet Explorer" class="icon internet explorer"></i>
+					<i title="Mozilla Firefox" class="icon firefox"></i>
+					<i title="Safari" class="icon safari"></i>
+					<i title="Google Chrome" class="icon chrome"></i>
 				</div>
 			</footer> 
 			<!--Aqui-->
