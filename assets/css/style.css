@@ -161,6 +161,21 @@ img.login{
 		margin-top:1px;
 	}
 
+.helper-va {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.img-about{
+	position: absolute;
+	opacity: 0.15;
+    filter: alpha(opacity=15);
+	bottom: 0;
+	right: 0;
+	z-index: -1;
+}
+
 /* Custom, iPhone Retina */ 
 @media only screen and (min-width : 320px) {
 	.mr-xxs-5{
@@ -249,11 +264,30 @@ img.login{
 	}
 	/*Tabs*/
 	.ui.tabular.menu.inicio .item{
-		padding: 13px 10px;
+		padding: 13px 7px;
 	}
 		.ui.tabular.menu.inicio .item i{
 			    margin: 0 0 0 0;
 		}
+	
+	.about-xxs-container{
+		width: calc(100% - 20px);
+		height: calc(100% - 52px);
+		margin: auto 10px;
+	}
+		.about-xxs-container .about-xxs{
+			height: 100%;
+			text-align: center;
+		}
+			.about-xxs-container .about-xxs p{
+				font-size: 18px;
+				color:  #555;
+			}
+	.img-about{
+		width: 200px;
+		height: auto;
+	}
+		
 }
 
     /* Extra Small Devices, Phones */ 
@@ -341,6 +375,17 @@ img.login{
 	}
 	.mb-xs-110{
 		margin-bottom: 110px;
+	}
+	.about-xs-container .about-xs p{
+		font-size: 18px;
+	}
+	.about-xs-container{
+		width: calc(100% - 20px);
+		margin: auto 10px;
+	}
+	.img-about{
+		width: 200px;
+		height: auto;
 	}
 }
 
@@ -430,6 +475,17 @@ img.login{
 	.mb-sm-110{
 		margin-bottom: 110px;
 	}
+	.about-sm-container .about-sm p{
+		font-size: 25px;
+	}
+	.about-sm-container{
+		width: calc(100% - 120px);
+		margin: auto 60px;
+	}
+	.img-about{
+		width: 300px;
+		height: auto;
+	}
 }
 
     /* Medium Devices, Desktops */
@@ -517,6 +573,17 @@ img.login{
 	}
 	.mb-md-110{
 		margin-bottom: 110px;
+	}
+	.about-md-container .about-md p{
+		font-size: 35px;
+	}
+	.about-md-container{
+		width: calc(100% - 200px);
+		margin: auto 100px;
+	}
+	.img-about{
+		width: 400px;
+		height: auto;
 	}
 }
 
@@ -606,15 +673,16 @@ img.login{
 	.mb-lg-110{
 		margin-bottom: 110px;
 	}
+	.about-lg-container .about-lg p{
+		font-size: 38px;
+	}
+	.about-lg-container{
+		width: calc(100% - 400px);
+		margin: auto 200px;
+	}
 }
 
 /*Aqui*/
-#margen1{
-	margin: 10px;
-	width: 100%;
-	height: auto;
-	max-width: 300px;
-}
 
 footer{
 	position: fixed;
@@ -636,4 +704,26 @@ footer > * i{
 	float: right;
 }
 
+.ui.tabular.menu.inicio{
+	margin-bottom: 0px !important;
+}
 
+.item.pointer{
+	background-color: #E71A24 !important;
+	color:white !important;
+}
+
+.ui.tabular.menu .item:hover{
+	color:#CCC !important;
+	font-size: 15px;
+}
+
+.item.pointer.active{
+	background-color: #C60F18 !important;
+	color:white !important;
+}
+
+.ui.bottom.attached.tab.segment.active{
+	background-color: #DDD;
+	border-radius: 0px 2px 10px 10px;
+}
