@@ -149,10 +149,40 @@ switch ($tab) {
 		  			<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 card-body push-solv">
 		  				<span class="ticket-card-solv">&nbsp;</span>
 		  				<div class="button-solv">
-		  					<button class="mini circular ui icon button">
+		  					<button class="mini circular ui icon button" data-id="">
 								<i class="icon exchange"></i>
 							</button>
 		  				</div>
+		  			</div>
+		  		</div>
+		  		<div class="row">
+		  			<div class="col-xs-12 col-sm-3 col-md-3 col-lg-3 card-header">
+		  				Control de cambios:
+		  			</div>
+					<div class="col-xs-12 visible-xs card-body">
+		  				<span class="ticket-card-code" data-id="">&nbsp;</span>
+		  			</div>
+		  			<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9 card-header">
+		  				Tipo de cambio:
+		  			</div>
+		  			<div class="col-xs-12 visible-xs card-body">
+		  				<span class="ticket-card-change-type">
+		  					<label class="checkbox"><input type="checkbox" class="checkbox-type" data-value="1" disabled >Archivo</label>
+							<label class="checkbox"><input type="checkbox" class="checkbox-type" data-value="2" disabled >Base de Datos</label>
+							<label class="checkbox"><input type="checkbox" class="checkbox-type" data-value="3" disabled >Aplicativo</label>
+		  				</span>
+		  			</div>
+		  		</div>
+		  		<div class="row hidden-xs">
+		  			<div class="col-sm-3 col-md-3 col-lg-3 card-body">
+		  				<span class="ticket-card-code">&nbsp;</span>
+		  			</div>
+		  			<div class="col-sm-9 col-md-9 col-lg-9 card-body">
+		  				<span class="ticket-card-change-type">
+		  					<label class="checkbox-inline"><input type="checkbox" class="checkbox-type" data-value="1" disabled >Archivo</label>
+							<label class="checkbox-inline"><input type="checkbox" class="checkbox-type" data-value="2" disabled >Base de Datos</label>
+							<label class="checkbox-inline"><input type="checkbox" class="checkbox-type" data-value="3" disabled >Aplicativo</label>
+		  				</span>
 		  			</div>
 		  		</div>
 		  		<div class="row">
@@ -194,7 +224,7 @@ switch ($tab) {
 		  				Descripción:
 		  			</div>
 		  			<div class="col-xs-12 col-sm-9 col-md-9 col-lg-9 card-body">
-		  				<span id="ticket-card-description">&nbsp;</span>
+		  				<div id="ticket-card-description" class="text-initial">&nbsp;</div>
 		  			</div>
 		  		</div>
 		  	</div>
@@ -416,6 +446,20 @@ switch ($tab) {
             </button>
        	<?= form_close();?>
 	</main>
+	<script type="text/javascript" src="<?php echo base_url('assets/js/plugins/tinymce/tinymce.min.js')?>"></script>
+	<script type="text/javascript">
+		tinymce.init({
+		  	selector: 'textarea',
+		  	height: 100,
+		  	menubar: false,
+		 	 plugins: [
+		    	'advlist autolink lists link image charmap print preview anchor',
+		    	'searchreplace visualblocks code fullscreen',
+		    	'insertdatetime media table contextmenu paste code'
+		  	],
+		  	toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent'
+		});
+	</script>
 <?php
 		break;
 	case 'addUser':

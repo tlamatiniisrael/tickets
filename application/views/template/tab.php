@@ -8,9 +8,9 @@ switch ($tab) {
 	<div class="ui green five item menu non-margin-tb notes-tab" style="display:none;">
 		<a id="back-tab" class="item tab back-ticket"><i class="long arrow left icon"></i><span class="hidden-xs">Regresar</span></a>
 	  	<a id="peticion-tab" class="item tab active"><i class="plus square outline icon"></i> <span class="hidden-xs">Petición</span> </a>
-	  	<a id="notas-tab" class="item tab"><i class="file text outline icon"></i> <span class="hidden-xs">Notas</span> </a>
-	  	<a id="adjuntos-tab" class="item tab"><i class="folder outline icon"></i> <span class="hidden-xs">Adjuntos</span> </a>
-	  	<a id="historial-tab" class="item tab"><i class="history icon"></i> <span class="hidden-xs">Historial</span> </a>
+	  	<a id="notas-tab" class="item tab"><i class="file text outline icon"></i> <span class="hidden-xs">Notas</span> <span class="badge ml-xxs-3"></span> </a>
+	  	<a id="adjuntos-tab" class="item tab"><i class="folder outline icon"></i> <span class="hidden-xs">Adjuntos</span> <span class="badge ml-xxs-3"></span> </a>
+	  	<a id="historial-tab" class="item tab"><i class="history icon"></i> <span class="hidden-xs">Historial</span> <span class="badge ml-xxs-3"></span> </a>
 	</div>
 <?php
 		break;
