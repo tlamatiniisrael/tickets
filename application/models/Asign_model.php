@@ -33,16 +33,15 @@ class Asign_model extends CI_Model {
             return $ok;
         }
 
-        public function addDataSQL($data){
+        public function updateDataSQL($data){
             $ok = 0;
+            $id = $data['ticket_id'];
             $dataDB = 
             array(
-                'sql'           => $data['sql'],
-                'ticket_id'     => $data['ticket_id'],
-                'usuario_id'    => $data['usuario_id']
+                'sql'           => $data['sql']
             );
-
-            $ok = $this->db->insert('sql_ticket',$dataDB);
+            $this->db->where('ticket_id', $id);
+            $ok = $this->db->update('sql_ticket',$dataDB);
 
             if($ok == 1){
                 $ok = 0;
@@ -58,16 +57,16 @@ class Asign_model extends CI_Model {
             return $ok;
         }
 
-        public function addDataRevision($data){
+        public function updateDataRevision($data){
             $ok = 0;
+            $id = $data['ticket_id'];
             $dataDB = 
             array(
-                'revision'      => $data['revision'],
-                'ticket_id'     => $data['ticket_id'],
-                'usuario_id'    => $data['usuario_id']
+                'revision'      => $data['revision']
             );
 
-            $ok = $this->db->insert('revision_ticket',$dataDB);
+            $this->db->where('ticket_id', $id);
+            $ok = $this->db->update('revision_ticket',$dataDB);
 
             if($ok == 1){
                 $ok = 0;
@@ -96,6 +95,14 @@ class Asign_model extends CI_Model {
             $this->db->trans_complete();
             if ($this->db->trans_status() === TRUE)
             {
+                //Cambiar el estado del ticket
+                $dataDB = 
+                array(
+                    'estado_id' => 2
+                );
+                $this->db->where('ticket_id', $data['ticket_id']);
+                $this->db->update('tickets',$dataDB);
+                //Llenar el historial
                 $ok = 0;
                 $dataDB = 
                     array(

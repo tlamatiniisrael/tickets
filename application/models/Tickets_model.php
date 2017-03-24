@@ -21,7 +21,16 @@ class Tickets_model extends CI_Model {
                 'tipo_cambio_id'    => $data['tipo_cambio_id']
             );
             $this->db->insert('tickets',$dataDB);
-            return $this->db->insert_id();
+            $ticketID = $this->db->insert_id();
+            //Iniciar espacios SQL y Revision
+            $dataDB = 
+            array(
+                'ticket_id'      => $ticketID,
+                'usuario_id'     =>  $data['usuario_id'],
+            );
+            $this->db->insert('sql_ticket',$dataDB);
+            $this->db->insert('revision_ticket',$dataDB);
+            return $ticketID;
         }
          public function updateData($data){
             $ok = 0;

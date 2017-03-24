@@ -18,7 +18,7 @@ class Json_model extends CI_Model {
         }
 
         public function getJsonTickets($id){
-            $this->db->select('ticket_id, descripcion, fecha_registro, cat.categoria_id, categoria, tkt.solventacion_id, st.solventacion, tkt.usuario_id, us.usuario, tkt.asignado_id, asig.usuario as asignado, pri.prioridad_id, prioridad, etkt.estado_id, estado, sumario, descripcion');
+            $this->db->select('ticket_id, codigo, codigo, tkt.tipo_cambio_id, fecha_registro, cat.categoria_id, categoria, tkt.solventacion_id, st.solventacion, tkt.usuario_id, us.usuario, tkt.asignado_id, asig.usuario as asignado, pri.prioridad_id, prioridad, etkt.estado_id, estado, sumario, descripcion');
             $this->db->from('tickets tkt');
             $this->db->join('categorias cat', 'tkt.categoria_id = cat.categoria_id', 'left');
             $this->db->join('estado_ticket etkt', 'tkt.estado_id = etkt.estado_id', 'left');
@@ -81,6 +81,44 @@ class Json_model extends CI_Model {
             $this->db->from('historial_tickets ht');
             $this->db->join('usuarios u', 'ht.usuario_id = u.usuario_id');
             $this->db->where('ticket_id', $id);
+            $query = $this->db->get();
+            if($query->num_rows() > 0) return $query;
+            else return false;
+        }
+
+        public function getJsonTabCount($ticket){
+            $query = $this->db->query("SELECT 
+                                        (SELECT count(1) as conteo 
+                                        FROM nota_ticket
+                                        WHERE ticket_id = $ticket
+                                        )as conteo_notas,
+                                        (SELECT count(1) as conteo 
+                                        FROM archivo_ticket
+                                        WHERE ticket_id = $ticket
+                                        ) as conteo_adjuntos,
+                                        (SELECT count(1) as conteo 
+                                        FROM historial_tickets
+                                        WHERE ticket_id = $ticket
+                                        )as conteo_historial
+                                        FROM DUAL"
+                                    );
+            if($query->num_rows() > 0) return $query;
+            else return false;
+        }
+
+        public function getJsonSQL($ticket){
+            $this->db->select('sql');
+            $this->db->from('sql_ticket');
+            $this->db->where('ticket_id', $ticket);
+            $query = $this->db->get();
+            if($query->num_rows() > 0) return $query;
+            else return false;
+        }
+
+        public function getJsonRev($ticket){
+            $this->db->select('revision');
+            $this->db->from('revision_ticket');
+            $this->db->where('ticket_id', $ticket);
             $query = $this->db->get();
             if($query->num_rows() > 0) return $query;
             else return false;
