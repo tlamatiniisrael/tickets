@@ -290,6 +290,7 @@ $(document).ready(function(){
 			        formData.append(input.name,input.value);
 			    });
 			    formData.append('userfile', $('input[type=file]')[0].files[0]);
+			    formData.append('descripcion',tinyMCE.activeEditor.getContent());
 			    for (var pair of formData.entries()) {
     				console.log(pair[0]+ ', ' + pair[1]); 
 				}
@@ -529,6 +530,8 @@ $(document).ready(function(){
 				    	var estado 			= "&nbsp;";
 				    	var sumario 		= "&nbsp;";
 				    	var descripcion 	= "&nbsp;";
+				    	var code 			= "&nbsp;";
+				    	var tipoCambio 		= 0;
 
 				    	if(datos.ticket_id)
 				    		ticket_id 		= datos.ticket_id;
@@ -550,13 +553,27 @@ $(document).ready(function(){
 				    		sumario 		= datos.sumario;
 				    	if(datos.descripcion)
 				    		descripcion 	= datos.descripcion;
+				    	if(datos.codigo)
+				    		code 			= datos.codigo;
+				    	if(datos.tipo_cambio_id)
+				    		tipoCambio 		= datos.tipo_cambio_id;
+
+				    	tipoCambio = (tipoCambio >>> 0).toString(2);
+
+				    	if( tipoCambio[0] == 1)
+				    		$('.ticket-card-change-type .checkbox-type[data-value="1"]').prop('checked', true);
+				    	if( tipoCambio[1] == 1)
+				    		$('.ticket-card-change-type .checkbox-type[data-value="2"]').prop('checked', true);
+				    	if( tipoCambio[2] == 1)
+				    		$('.ticket-card-change-type .checkbox-type[data-value="3"]').prop('checked', true);
 
 					    $('#ticket-preview .ticket-card-id').html(ticket_id);
 					    $('#ticket-preview .ticket-card-id').attr("data-id", ticket_id);
 					    $('#ticket-preview .ticket-card-category').html(categoria);
 					    $('#ticket-preview .ticket-card-registro').html(fecha_registro);
-					    $('#ticket-preview .push-solv').attr("data-id", ticket_id);
+					    $('#ticket-preview .push-solv button').attr("data-id", ticket_id);
 					    $('#ticket-preview .ticket-card-solv').html(solventacion);
+					    $('#ticket-preview .ticket-card-code').html(code);
 					    $('#ticket-preview #ticket-card-report').html(usuario);	
 					    $('#ticket-preview #ticket-card-asign').html(asignado);	
 					    $('#ticket-preview #ticket-card-priority').html(prioridad);	
@@ -566,8 +583,24 @@ $(document).ready(function(){
 					    $('.ticket').val(ticket_id);
 					    $(".inicio .item").removeClass("active");
 						$("[data-tab='tab-nota']").addClass("active");
-					    alignContainers();	
+					    alignContainers();
+
 			    	}
+			    },
+			    complete: function(){
+			    	$.ajax({
+					    type: "POST",
+					    url: base_url+"index.php/json/jsonTabCount",
+					    data: { ticket : ticket },
+					    success: function (success) {
+					        json = jQuery.parseJSON(success)[0];
+					       	if(json.status != "fail"){
+							    $('#notas-tab .badge').text(json.conteo_notas);
+							    $('#adjuntos-tab .badge').text(json.conteo_adjuntos);
+							    $('#historial-tab .badge').text(json.conteo_historial);
+					    	}
+					    }
+					});
 			    }
 			});
 		});
@@ -1021,6 +1054,31 @@ $(document).ready(function(){
 		  	}
 		});
 
+		$(document).on('click', '.item.pointer[data-tab="tab-sql"]', function(){
+			var ticket = $('.ticket-card-id').attr('data-id');
+			$.ajax({
+			        type: "POST",
+			        url: base_url+"index.php/json/jsonSQL",
+			        data: {ticket:ticket},
+			        success: function (success) {
+			          	json = jQuery.parseJSON(success)[0];
+			          	$('textarea#sql').val(json.sql);
+			        }
+			});
+		});
+		$(document).on('click', '.item.pointer[data-tab="tab-revision"]', function(){
+			var ticket = $('.ticket-card-id').attr('data-id');
+			$.ajax({
+			        type: "POST",
+			        url: base_url+"index.php/json/jsonRev",
+			        data: {ticket:ticket},
+			        success: function (success) {
+			        	json = jQuery.parseJSON(success)[0];
+			          	$('textarea#revision').val(json.revision);
+			        }
+			});
+		});
+
 		$("#sql-form").validate({
 		 	rules: {
 			    sql: {
@@ -1043,7 +1101,7 @@ $(document).ready(function(){
 		  		console.log($(form).serialize());
 		  		$.ajax({
 			        type: "POST",
-			        url: base_url+"index.php/asign/insertSQL",
+			        url: base_url+"index.php/asign/updateSQL",
 			        data: $(form).serialize(),
 			        success: function (success) {
 			        	console.log(success);
@@ -1054,7 +1112,6 @@ $(document).ready(function(){
 			            		$(".alert-msg").text(json.msg);
 				            	$(".positive.message").show().delay(5000).fadeOut();
 				            	$("input").not(".non-active").val('');
-				            	$("textarea").val('');
 				            	$("select").val('');
 				            	$("select option[value='']").attr("selected",true);
 			            		break;
@@ -1092,7 +1149,7 @@ $(document).ready(function(){
 		  		console.log($(form).serialize());
 		  		$.ajax({
 			        type: "POST",
-			        url: base_url+"index.php/asign/insertRevision",
+			        url: base_url+"index.php/asign/updateRevision",
 			        data: $(form).serialize(),
 			        success: function (success) {
 			        	console.log(success);
@@ -1103,7 +1160,6 @@ $(document).ready(function(){
 			            		$(".alert-msg").text(json.msg);
 				            	$(".positive.message").show().delay(5000).fadeOut();
 				            	$("input").not(".non-active").val('');
-				            	$("textarea").val('');
 				            	$("select").val('');
 				            	$("select option[value='']").attr("selected",true);
 			            		break;
@@ -1171,6 +1227,7 @@ $(document).ready(function(){
 		$( document ).on("click", ".push-solv button", function(){
 			console.log("solventar");
 			var id = $(this).attr("data-id");
+			console.log(id);
 			$('.ui.modal#solventacion-modal #id').val(id);
 			$('.ui.modal#solventacion-modal').modal('show');
 		});
@@ -1181,11 +1238,17 @@ $(document).ready(function(){
 		 	rules: {
 			    solventacion: {
 			      	required: true,
+			    },
+			    revision: {
+			    	required: true,
 			    }
 		  	},
 		  	messages: {
 			    solventacion: {
 			      	required: "Necesita elegir una solventación",
+			    },
+			    revision: {
+			    	required: "Agregue una descripción de la solventación",
 			    }
 		  	},
 			highlight: function(element) {
@@ -1235,7 +1298,9 @@ $(document).ready(function(){
 	$('.ui.accordion').accordion();
 	// Change button solventacion
 	$(document).on("mouseover", ".push-solv", function(){
-		$(".button-solv").show();
+		var texto = $(this).find(".ticket-card-solv").text().trim();
+		if(texto === '')
+			$(".button-solv").show();
 	}).on("mouseout",".push-solv", function(){
 		$(".button-solv").hide();
 	});
