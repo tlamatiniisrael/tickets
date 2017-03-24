@@ -61,4 +61,28 @@ class Json extends CI_Controller {
 		else
 			echo '{"status":"fail","function":"Json.php -> jsonAsign"}';
 	}
+	public function jsonTabCount(){
+		$ticket	= $this->input->post('ticket');
+		$ok = $this->json_model->getJsonTabCount($ticket);
+		if($ok != false)
+			echo json_encode($ok->result());
+		else
+			echo '{"status":"fail","function":"Json.php -> jsonTabCount"}';
+	}
+	public function jsonSQL(){
+		$ticket	= $this->input->post('ticket');
+		$ok = $this->json_model->getJsonSQL($ticket);
+		if($ok != false)
+			echo json_encode($ok->result());
+		else
+			echo '{"status":"fail","function":"Json.php -> jsonSQL"}';
+	}
+	public function jsonRev(){
+		$ticket	= $this->input->post('ticket');
+		$ok = $this->json_model->getJsonRev($ticket);
+		if($ok != false)
+			echo json_encode($ok->result());
+		else
+			echo '{"status":"fail","function":"Json.php -> jsonRev"}';
+	}
 }

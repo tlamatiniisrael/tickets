@@ -64,7 +64,7 @@ class Asign extends CI_Controller {
 
 	}
 
-	public function insertSQL()
+	public function updateSQL()
 	{
 		$ticket			= $this->input->post('ticket');
 		$sql			= $this->input->post('sql');
@@ -76,17 +76,17 @@ class Asign extends CI_Controller {
 			'usuario_id' 	=> $this->session->userdata('usuario')
 		);
 
-		$ok = $this->asign_model->addDataSQL($data);
+		$ok = $this->asign_model->updateDataSQL($data);
 
 		if( $ok == 1){
-			echo '{"status":"success", "msg":"El SQL del ticket '.$ticket.' se ha agregado correctamente"}';
+			echo '{"status":"success", "msg":"El SQL del ticket '.$ticket.' se ha actualizado correctamente"}';
 		}else{
 			echo '{"status":"fail", "msg":"Al parecer hay un problema en la BD espere un momento y vuelvalo a intentar"}';	
 		}
 
 	}
 
-	public function insertRevision()
+	public function updateRevision()
 	{
 		$ticket			= $this->input->post('ticket');
 		$revision		= $this->input->post('revision');
@@ -98,10 +98,10 @@ class Asign extends CI_Controller {
 			'usuario_id' 	=> $this->session->userdata('usuario')
 		);
 
-		$ok = $this->asign_model->addDataRevision($data);
+		$ok = $this->asign_model->updateDataRevision($data);
 
 		if( $ok == 1){
-			echo '{"status":"success", "msg":"La revisión al ticket '.$ticket.' se ha agregado correctamente"}';
+			echo '{"status":"success", "msg":"La revisión al ticket '.$ticket.' se ha actualizado correctamente"}';
 		}else{
 			echo '{"status":"fail", "msg":"Al parecer hay un problema en la BD espere un momento y vuelvalo a intentar"}';	
 		}
