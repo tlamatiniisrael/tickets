@@ -7,7 +7,7 @@ class Login_model extends CI_Model {
     }
 
     public function getStartSession($user){
-            $this->db->select('usuario_id, usuario, perfil_id, contrasena');
+            $this->db->select('usuario_id, usuario, perfil_id, email, contrasena');
             $this->db->from('usuarios u');
             $this->db->where('usuario', $user);
             $query = $this->db->get();

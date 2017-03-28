@@ -49,6 +49,9 @@ img.login{
 .capitalize-case{
 	text-transform: capitalize;
 }
+.text-initial{
+	text-align: initial;
+}
 /*Display options*/
 .show-none{
 	display: none;
@@ -141,7 +144,7 @@ img.login{
 	background-color: #DDD;
 }
 .panel-card .card-body{
-	padding: 5px 0px;
+	padding: 5px 5px;
 	background-color: white;
 	border: 1px solid #DDD;
 }
@@ -186,6 +189,9 @@ img.login{
 	}
 	.mr-xxs-15{
 		margin-right: 15px;
+	}
+	.ml-xxs-3{
+		margin-left: 3px;
 	}
 	.ml-xxs-5{
 		margin-left: 5px;

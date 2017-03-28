@@ -23,6 +23,7 @@ switch ($tab) {
 	$tabHome 	= "";
 	$tabTicket 	= "";
 	$tabAddUser = "";
+	$tabProfile = "";
 	$tabAbout 	= "";
 	switch ($tab) {
 	case 'login':
@@ -35,6 +36,9 @@ switch ($tab) {
 		break;
 	case 'addUser':
 		$tabAddUser = "active";
+		break;
+	case 'profile':
+		$tabProfile = "active";
 		break;
 	case 'about':
 		$tabAbout 	= "active";
@@ -51,11 +55,11 @@ switch ($tab) {
 	    <i class="ticket icon"></i>
 	    <span>Nuevo Ticket</span>
 	  </a>
-	  <!--
-	  <a class="item">
+	  <a class="item" href="<?=base_url();?>/index.php/welcome/profile" class="<?=$tabProfile?> item">
 	    <i class="user icon"></i>
 	    <span>Mi cuenta</span>
 	  </a>
+	  <!--
 	  <a class="item">
 	    <i class="area chart icon"></i>
 	    <span>Análisis</span>
@@ -65,7 +69,7 @@ switch ($tab) {
 	  if($this->session->userdata('rol') == '1'){
 	  ?>
 	  <a href="<?=base_url();?>/index.php/welcome/addUser" class="<?=$tabAddUser?> item">
-	    <i class="user icon"></i>
+	    <i class="group icon"></i>
 	    <span>Agregar Usuario</span>
 	  </a>
 	  <?php

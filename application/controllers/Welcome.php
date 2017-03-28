@@ -35,7 +35,7 @@ class Welcome extends CI_Controller {
 		$rol 		= $this->session->userdata('rol');
 		$data['tickets'] 		= $this->tickets_model->getData($usuario, $rol);
 		$data['estados'] 		= $this->utilerias_model->getEstados();
-		$data['tecnicos'] 		= $this->utilerias_model->getTecnicos();
+		$data['tecnicos'] 		= $this->utilerias_model->getTecnicosDetail();
 		$data['solventacion'] 	= $this->utilerias_model->getSolventacion();
 		$data['ambiente'] 		= $this->utilerias_model->getAmbiente();
 		
@@ -76,6 +76,20 @@ class Welcome extends CI_Controller {
 		$this->load->view('modals/modal_menu');
 		$this->load->view('modals/modal_edit',$data);
 		$this->load->view('modals/modal_delete',$data);
+		$this->load->view('template/content',$data);
+		$this->load->view('template/footer');
+		$this->load->view('template/foot');
+	}
+	public function profile()
+	{
+		if(!$this->session->userdata('usuario')){
+			redirect(base_url(), 'location');
+		}
+		$data['tab'] 		= '{"tab":"profile"}';
+		$data['perfil'] 	= $this->utilerias_model->getPerfilUsuario();
+		$this->load->view('template/head');
+		$this->load->view('template/header',$data);
+		$this->load->view('template/tab',$data);
 		$this->load->view('template/content',$data);
 		$this->load->view('template/footer');
 		$this->load->view('template/foot');

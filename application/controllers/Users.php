@@ -97,6 +97,59 @@ class Users extends CI_Controller {
 			echo '{"status":"fail", "msg":"Al parecer hay un problema en la BD espere un momento y vuelvalo a intentar"}';	
 		}
 	}
+	public function updateSingleData()
+	{
+
+		$id			= $this->input->post('id');
+		$usuario	= $this->input->post('usuario');
+		$pass		= $this->input->post('pass');
+		$mail		= $this->input->post('mail');
+		$perfil		= $this->input->post('perfil');
+		$perfilName = '';
+
+		if($id == $this->session->userdata('usuario')){
+
+			if($pass){
+				$pass	= $this->encrypt->encode($pass);
+			}
+			else{
+				$pass 	= "";
+			}
+
+			$data = 
+			array(
+				'id' 			=> $id,
+				'usuario' 		=> $usuario,
+				'contrasena' 	=> $pass,
+				'email' 		=> $mail
+			);
+
+			$ok = $this->users_model->updateSingleData($data);
+
+			switch ($perfil) {
+				case '1':
+					$perfilName = 'Administrador';
+					break;
+				case '2':
+					$perfilName = 'Usuario';
+					break;
+				case '3':
+					$perfilName = 'Técnico';
+					break;
+			}
+
+			if( $ok == 1){
+				$this->session->unset_userdata('info');
+				$data = json_encode(array('id' => $id, 'usuario' => $usuario, 'email' => $mail, 'perfil' => $perfil));
+				$this->session->set_userdata('info', $data);
+				echo '{"status":"success", "msg":"El usuario '.$usuario.' se ha actualizado correctamente", "usuario" : "'.$usuario.'", "email" : "'.$mail.'", "perfil" : "'.$perfilName.'"}';
+			}else{
+				echo '{"status":"fail", "msg":"Al parecer hay un problema en la BD espere un momento y vuelvalo a intentar"}';	
+			}
+		}else{
+			echo '{"status":"fail", "msg":"Está acción no está permitida"}';	
+		}
+	}
 	public function deleteData()
 	{
 		$usuario = $this->input->post('usuario');

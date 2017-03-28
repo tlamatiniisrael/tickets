@@ -24,10 +24,13 @@ class Login extends CI_Controller {
 			$user 			= $datos[0]->usuario_id;
 			$usuario 		= $datos[0]->usuario;
 			$type 			= $datos[0]->perfil_id;
+			$email			= $datos[0]->email;
+			$info 			= json_encode(array('id' => $user, 'usuario' => $usuario, 'email' => $email, 'perfil' => $type));
 			$sessionData 	= 	array(
 									'usuario' 	=> $user,
 									'nombre' 	=> $usuario,
 									'rol' 		=> $type,
+									'info'		=> $info,
 									'activo' 	=> "1"
 								);
 			$this->session->set_userdata($sessionData);

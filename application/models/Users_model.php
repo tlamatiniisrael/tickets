@@ -25,7 +25,7 @@ class Users_model extends CI_Model {
             }
             return $ok;
         }
-         public function updateData($data){
+        public function updateData($data){
             $ok = 0;
             $id = $data['id'];
             if($data['contrasena']){
@@ -42,6 +42,27 @@ class Users_model extends CI_Model {
                         'usuario'       => $data['usuario'],
                         'email'         => $data['email'],
                         'perfil_id'     => $data['perfil_id']
+                    );   
+            }
+            $this->db->where('usuario_id', $id);
+            $ok = $this->db->update('usuarios',$dataDB);
+            return $ok;
+        }
+        public function updateSingleData($data){
+            $ok = 0;
+            $id = $data['id'];
+            if($data['contrasena']){
+                $dataDB = 
+                array(
+                    'usuario'       => $data['usuario'],
+                    'contrasena'    => $data['contrasena'],
+                    'email'         => $data['email']
+                );
+            }else{
+                $dataDB = 
+                    array(
+                        'usuario'       => $data['usuario'],
+                        'email'         => $data['email']
                     );   
             }
             $this->db->where('usuario_id', $id);

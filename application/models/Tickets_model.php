@@ -49,22 +49,25 @@ class Tickets_model extends CI_Model {
         public function getData($usuario, $rol){
             switch ($rol) {
                 case '1':
-                    $this->db->select('ticket_id, fecha_registro, t.usuario_id, u.usuario, e.estado_id, e.estado, sumario');
+                    $this->db->select('ticket_id, codigo, fecha_registro, t.usuario_id, u.usuario, a.usuario asignado, e.estado_id, e.estado, sumario, u.email m1, a.email m2');
                     $this->db->from('tickets t');
                     $this->db->join('usuarios u', 't.usuario_id = u.usuario_id', 'left');
+                    $this->db->join('usuarios a', 't.asignado_id = a.usuario_id', 'left');
                     $this->db->join('estado_ticket e', 't.estado_id = e.estado_id', 'left');
                     break;
                 case '2':
-                    $this->db->select('ticket_id, fecha_registro, t.usuario_id, u.usuario, e.estado_id, e.estado, sumario');
+                    $this->db->select('ticket_id, fecha_registro, t.usuario_id, u.usuario, e.estado_id, e.estado, sumario, u.email m1, a.email m2');
                     $this->db->from('tickets t');
                     $this->db->join('usuarios u', 't.usuario_id = u.usuario_id', 'left');
+                    $this->db->join('usuarios a', 't.asignado_id = a.usuario_id', 'left');
                     $this->db->join('estado_ticket e', 't.estado_id = e.estado_id', 'left');
                     $this->db->where('t.usuario_id', $usuario);
                     break;
                 case '3':
-                    $this->db->select('ticket_id, fecha_registro, t.usuario_id, u.usuario, e.estado_id, e.estado, sumario');
+                    $this->db->select('ticket_id, fecha_registro, t.usuario_id, u.usuario, e.estado_id, e.estado, sumario, u.email m1, a.email m2');
                     $this->db->from('tickets t');
                     $this->db->join('usuarios u', 't.usuario_id = u.usuario_id', 'left');
+                    $this->db->join('usuarios a', 't.asignado_id = a.usuario_id', 'left');
                     $this->db->join('estado_ticket e', 't.estado_id = e.estado_id', 'left');
                     $this->db->where('t.asignado_id', $usuario);
                     break;

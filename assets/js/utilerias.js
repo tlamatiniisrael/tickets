@@ -310,8 +310,10 @@ $(document).ready(function(){
 				            	$(".alert-msg").text(json.msg);
 				            	$(".positive.message").show().delay(5000).fadeOut();
 				            	$("input").not(".non-active").val('');
+				            	$('.non-active').attr('checked', false);
 				            	$("textarea").val('');
 				            	$("select").val('');
+				            	tinyMCE.activeEditor.setContent('');
 				            	$("select option[value='']").attr("selected",true);
 				            	break;
 				            case 'fail':
@@ -505,9 +507,77 @@ $(document).ready(function(){
 		  	}
 		});
 
+		$(".update-user-form#formulario-update").validate({
+		 	rules: {
+		 		usuario: {
+			      	required: true,
+			    },
+			    pass2: {
+			    	equalTo: ".pass-update"
+			    },
+			    mail: {
+			    	required: true,
+			    	email: true,
+			    },
+			    perfil: {
+			    	required: true,
+			    }
+		  	},
+		  	messages: {
+		  		usuario: {
+			    	required:"El campo Usuario no puede estar vacío"
+			    },
+			    pass2: {
+			    	equalTo:"Las contraseñas no coinciden"
+			    },
+			    mail: {
+			    	required:"El campo Email no puede estar vacío",
+			    	email:"Formato de email invalido",
+			    },
+			    perfil: {
+			    	required:"Seleccione un perfil",
+			    }
+		  	},
+			highlight: function(element) {
+			    // $(element).parent('.form-group').addClass('validate-error');
+			},
+		  	success: function (element) {
+			    // $(element).parent('.form-group').removeClass('validate-error');
+			    $(element).parent('.form-group').find('.error').remove();
+		  	},
+		  	submitHandler: function(form) {
+		  		$.ajax({
+			        type: "POST",
+			        url: base_url+"index.php/users/updateSingleData",
+			        data: $(form).serialize(),
+			        success: function (success) {
+			        	console.log(success);
+			          	json = jQuery.parseJSON(success);
+			          	//console.log(json);
+			          	switch(json.status){
+				            case 'success':
+				            	$(".alert-msg").text(json.msg);
+				            	$(".positive.message").show().delay(5000).fadeOut();
+				            	$("#pass, #pass2").val('');
+				            	break;
+				            case 'fail':
+				            	$(".alert-msg").text(json.msg);
+			            		$(".error.message").show().delay(5000).fadeOut();
+				            	break;
+				            default:
+				              break;
+			          	}
+			        }
+			    });  
+		  	}
+		});
+
+		var mail;
 		// Ventana home
 		$(document).on("click", ".ticket-field", function(){
-			var ticket = $(this).attr("data-id");
+			var ticket 	= $(this).attr("data-id");
+			mail 	= atob($(this).attr("data-mail")).split(',');
+			console.log(mail);
 			$.ajax({
 			    type: "POST",
 			    url: base_url+"index.php/json/jsontickets",
@@ -691,7 +761,6 @@ $(document).ready(function(){
 			    url: base_url+"index.php/json/jsonAttached",
 			    data: { ticket : ticket },
 			    success: function (success) {
-			        console.log(success);
 			    	json = jQuery.parseJSON(success);
 			       	if(json.status != "fail"){
 				    	var conteo = json.length;
@@ -874,14 +943,13 @@ $(document).ready(function(){
 		  	},
 		  	submitHandler: function(form) {
 		  		console.log($(form).serialize());
+		  		ticket = $(form).find('input[name="ticket"]').val();
 		  		$.ajax({
 			        type: "POST",
 			        url: base_url+"index.php/asign/insertNote",
 			        data: $(form).serialize(),
 			        success: function (success) {
-			        	console.log(success);
 			          	json = jQuery.parseJSON(success);
-			          	console.log(json);
 			         	switch(json.status){
 			            	case 'success':
 			            		$(".alert-msg").text(json.msg);
@@ -898,8 +966,18 @@ $(document).ready(function(){
 			            	default:
 			              		break;
 			          	}
+			        },
+			        complete: function(){
+			        	$.ajax({
+			        		type: "POST",
+					        url: base_url+"index.php/mail/send",
+					        data: { to : mail, msg : "Se ha anexado una nota al ticket con id: "+ticket },
+					        success: function (success) {
+					        	console.log("Se envio el correo a "+mail);
+					        }
+			        	});
 			        }
-			    });  
+			    });
 		  	}
 		});
 
@@ -924,7 +1002,7 @@ $(document).ready(function(){
 		  	},
 		  	submitHandler: function(form) {
         		var formData = new FormData($('#adjunto-form')[0]);
-    			
+        		ticket = $(form).find('input[name="ticket"]').val();
     			$.ajax({
 			        type 		: "POST",
 			        url 		: base_url+"index.php/asign/uploadFile",
@@ -949,6 +1027,16 @@ $(document).ready(function(){
 			            	default:
 			              		break;
 			          	}
+			        },
+			        complete: function(){
+			        	$.ajax({
+			        		type: "POST",
+					        url: base_url+"index.php/mail/send",
+					        data: { to : mail, msg : "Se ha anexado una archivo al ticket con id:"+ticket },
+					        success: function (success) {
+					        	console.log("Se envio el correo a "+mail);
+					        }
+			        	});
 			        }
 			    });  
 		  	}
@@ -999,6 +1087,16 @@ $(document).ready(function(){
 			            	default:
 			              		break;
 			          	}
+			        },
+			        complete: function(){
+			        	$.ajax({
+			        		type: "POST",
+					        url: base_url+"index.php/mail/send",
+					        data: { to : mail, msg : "Se ha cambiado el estado del ticket con id:"+ticket },
+					        success: function (success) {
+					        	console.log("Se envio el correo a "+mail);
+					        }
+			        	});
 			        }
 			    });  
 		  	}
@@ -1024,6 +1122,12 @@ $(document).ready(function(){
 		  	},
 		  	submitHandler: function(form) {
 		  		console.log($(form).serialize());
+		  		userMail 	= $('#asignar option:selected').attr('data-mail');
+		  		ticket 		= $(form).find('input[name="ticket"]').val();
+		  		mail.pop();
+		  		mail.push(userMail);
+				updateMail = btoa(mail[0]+','+mail[1]);
+		  		$('.ticket-field[data-id = "'+ticket+'"]').attr('data-mail', updateMail);
 		  		$.ajax({
 			        type: "POST",
 			        url: base_url+"index.php/asign/updateAsing",
@@ -1049,6 +1153,16 @@ $(document).ready(function(){
 			            	default:
 			              		break;
 			          	}
+			        },
+			        complete: function(){
+			        	$.ajax({
+			        		type: "POST",
+					        url: base_url+"index.php/mail/send",
+					        data: { to : userMail, msg : "Se te ha asignado el ticket con id:"+ticket },
+					        success: function (success) {
+					        	console.log("Se envio el correo a "+userMail);
+					        }
+			        	});
 			        }
 			    });  
 		  	}

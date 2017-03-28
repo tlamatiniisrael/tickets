@@ -38,7 +38,7 @@ switch ($tab) {
 	                <?= form_label("Contraseña","contrasena", array('class' => 'text-negro'));?>
 	                <?= form_input(array('id' => 'contrasena', 'type'  => 'password','class'  => 'form-control required','name'  => 'contrasena', 'placeholder'  => 'Contraseña'));?>
 	            </div>
-	            <button type="submit" class="mt-15 btn btn-windows">
+	            <button type="submit" class="mt-15 btn btn-success">
 	                <i class="glyphicon glyphicon-ok"></i> Iniciar Sesión
 	            </button>
 	       	<?= form_close();?>
@@ -53,9 +53,23 @@ switch ($tab) {
 	        <thead>
 	            <tr>
 	                <th class="visible-xs visible-sm visible-md visible-lg">No.</th>
+	                <?php
+					if($this->session->userdata('rol') == '1'){
+					?>
+	                <th class="visible-xs visible-sm visible-md visible-lg">Control de Cambios</th>
+	                <?php
+		            }
+		            ?>
 	                <th class="visible-sm visible-md visible-lg">Registro</th>
 	                <th class="visible-sm visible-md visible-lg">Reportó</th>
 	                <th class="visible-sm visible-md visible-lg">Estado</th>
+	                <?php
+					if($this->session->userdata('rol') == '1'){
+					?>
+	                <th class="visible-sm visible-md visible-lg">Asignado a</th>
+	                <?php
+		           	}
+		            ?>
 	                <th class="visible-sm visible-md visible-lg">Sumario</th>
 	            </tr>
 	        </thead>
@@ -63,12 +77,27 @@ switch ($tab) {
 	        <?php
 	        if($tickets){
 				foreach ($tickets->result() as $ticket) {
+					$mail = base64_encode($ticket->m1.','.$ticket->m2);
 				?>
-		            <tr class="ticket-field" data-id="<?=$ticket->ticket_id?>">
+		            <tr class="ticket-field" data-id="<?=$ticket->ticket_id?>" data-mail="<?=$mail;?>">
 		                <th class="visible-xs visible-sm visible-md visible-lg"><?=$ticket->ticket_id?></th>
+		                <?php
+					  		if($this->session->userdata('rol') == '1'){
+						?>
+		                <th class="visible-xs visible-sm visible-md visible-lg"><?=$ticket->codigo?></th>
+		                <?php
+		            	}
+		                ?>
 		                <th class="visible-sm visible-md visible-lg"><?=$ticket->fecha_registro?></th>
 		                <th class="visible-sm visible-md visible-lg capitalize-case"><?=$ticket->usuario?></th>
 		                <th class="visible-sm visible-md visible-lg capitalize-case"><?=$ticket->estado?></th>
+		                <?php
+					  		if($this->session->userdata('rol') == '1'){
+						?>
+		                <th class="visible-sm visible-md visible-lg capitalize-case"><?=$ticket->asignado?></th>
+		                <?php
+		            	}
+		                ?>
 		                <th class="visible-sm visible-md visible-lg"><?=$ticket->sumario?></th>
 
 		            </tr>
@@ -331,7 +360,19 @@ switch ($tab) {
 					<?= form_input(array('id' => 'ticket', 'type'  => 'hidden','name'  => 'ticket','class' => 'ticket non-active'));?>
 						<div class="form-group text-left">
 							<?= form_label("Asignar técnico","asignar", array('class' => 'text-negro'));?>
-							<?= form_dropdown('asignar', $tecnicos, "", array('id' => 'asignar', 'class' => 'form-control')); ?>
+							<?php
+							$conteo = count($tecnicos)
+							?>
+							<select id="asignar" name="asignar" class="form-control">
+								<option val="" data-mail="">Selecciona una opción</option>
+								<?php
+								for ($i=0; $i < $conteo; $i++) { 
+									?>
+									<option value="<?=$tecnicos[$i]->usuario_id?>" data-mail="<?=$tecnicos[$i]->email?>"><?=$tecnicos[$i]->usuario?></option>
+									<?php
+								}
+								?>
+							</select>
 			            </div>
 			            <button type="submit" class="mt-15 btn btn-success">
                 			<i class="glyphicon glyphicon-check"></i> Asignar Técnico
@@ -407,9 +448,9 @@ switch ($tab) {
                 <?= form_input(array('id' => 'codigo', 'type'  => 'text','class'  => 'form-control required','name'  => 'codigo', 'placeholder'  => 'Número de control de cambios'));?>
             </div>
             <div class="form-group text-center">
-	            <label class="checkbox-inline"><input type="checkbox" name="archivo" value="1">Archivo</label>
-				<label class="checkbox-inline"><input type="checkbox" name="base-datos" value="2">Base de Datos</label>
-				<label class="checkbox-inline"><input type="checkbox" name="aplicativo" value="4">Aplicativo</label>
+	            <label class="checkbox-inline"><input type="checkbox" class="non-active" name="archivo" value="1">Archivo</label>
+				<label class="checkbox-inline"><input type="checkbox" class="non-active" name="base-datos" value="2">Base de Datos</label>
+				<label class="checkbox-inline"><input type="checkbox" class="non-active" name="aplicativo" value="4">Aplicativo</label>
 			</div>
 			<div class="form-group text-left">
                 <?= form_label("Categoría","categoria", array('class' => 'text-negro'));?>
@@ -441,7 +482,7 @@ switch ($tab) {
 				    Selecciona un archivo para enviar
 				</span>
 			</div>
-            <button type="submit" class="mt-15 btn btn-windows">
+            <button type="submit" class="mt-15 btn btn-success">
                 <i class="glyphicon glyphicon-check"></i> Enviar
             </button>
        	<?= form_close();?>
@@ -513,7 +554,7 @@ switch ($tab) {
                 <?= form_dropdown('perfil', $perfil, "", array('id' => 'perfil', 'class' => 'form-control')); ?>
             </div>
             
-            <button type="submit" class="mt-15 btn btn-windows">
+            <button type="submit" class="mt-15 btn btn-success">
                 <i class="glyphicon glyphicon-check"></i> Enviar Usuario
             </button>
        	<?= form_close();?>
@@ -521,6 +562,40 @@ switch ($tab) {
 	<script type="text/javascript">
 		
 	</script>
+<?php
+		break;
+	case 'profile':
+	$info =  json_decode($this->session->userdata('info'));
+	$id 		= $info->id;
+	$usuario 	= $info->usuario;
+	$email 		= $info->email;
+	$tipo		= $info->perfil;
+?>
+		<main class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-offset-2 col-md-8 col-lg-offset-2 col-lg-8 text-center vertical-align">
+			<?= form_open('users/updateData', array('class' => 'update-user-form mt-xxs-10 mb-xxs-10', 'id' => 'formulario-update', 'data-toggle' => "validator", 'autocomplete' => 'off')); ?>
+	            <?= form_input(array('id' => 'id', 'value' => $id, 'type'  => 'hidden','name'  => 'id'));?>
+	            <div class="form-group text-left">
+	                <?= form_label("Usuario","usuario", array('class' => 'text-negro'));?>
+	                <?= form_input(array('id' => 'usuario', 'value' => $usuario, 'type'  => 'text','class'  => 'form-control required','name'  => 'usuario', 'placeholder'  => 'Usuario', 'readonly' => 'readonly'));?>
+	            </div>
+
+	            <div class="form-group text-left">
+	                <?= form_label("Contraseña","pass", array('class' => 'text-negro'));?>
+	                <?= form_input(array('id' => 'pass', 'type'  => 'password','class'  => 'form-control pass-update','name'  => 'pass', 'placeholder'  => 'Contraseña'));?>
+	            </div>
+	            <div class="form-group text-left">
+	                <?= form_label("Repetir contraseña","pass2", array('class' => 'text-negro'));?>
+	                <?= form_input(array('id' => 'pass2', 'type'  => 'password','class'  => 'form-control','name'  => 'pass2', 'placeholder'  => 'Repite la contraseña'));?>
+	            </div>
+	            <div class="form-group text-left">
+	                <?= form_label("Email","mail", array('class' => 'text-negro'));?>
+	                <?= form_input(array('id' => 'mail', 'value' => $email, 'type'  => 'text','class'  => 'form-control required','name'  => 'mail', 'placeholder'  => 'Email'));?>
+	            </div>
+	            <button type="submit" class="mt-15 btn btn-success">
+                	<i class="glyphicon glyphicon-check"></i> Actualizar mis datos
+            	</button>
+            <?= form_close();?>
+    	</main>
 <?php
 		break;
 	case 'about':

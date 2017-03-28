@@ -69,6 +69,13 @@ class Utilerias_model extends CI_Model {
 		    return ($data);
         }
 
+        public function getTecnicosDetail(){
+        	$this->db->where('perfil_id', '3');
+            $query = $this->db->get('usuarios');
+			if($query->num_rows() > 0) return $query->result();
+            else return false;
+        }
+
         public function getSolventacion(){
             $query = $this->db->get('solventacion_ticket');
 			$data=array();
